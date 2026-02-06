@@ -7,3 +7,7 @@ This is the plan we are going to just for the project.
 Command: pnpm create cloudflare@latest
 **PNPM**: Package Manager
 **Hono**: Typescript Framework for backend development
+
+## Architectural Patterns
+
+**modularity**: Breaking the app into several related parts

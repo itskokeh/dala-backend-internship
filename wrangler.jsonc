@@ -2,17 +2,21 @@
  * For more details on how to configure Wrangler, refer to:
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
+
+//  IPv6 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+//  IPv4 192.594.45.345
+//  ISP = MTN, GLO, STARLINK etc
+//  HOST = localhost = "127.0.0.1"
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "dala-backend-internship",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-09-27",
-	"assets": {
-		"binding": "ASSETS",
-		"directory": "./public"
-	},
 	"observability": {
 		"enabled": true
+	},
+	"dev": {
+		"host": "localhost"
 	}
 	/**
 	 * Smart Placement
