@@ -1,4 +1,5 @@
 import {Hono} from 'hono'
+import students from '../utils/studentsGenerator'
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
@@ -6,7 +7,10 @@ const app = new Hono<{ Bindings: CloudflareBindings }>();
 // asynchronous and synchronous
 // localhost:8787 + /health + /
 app.get("/", async (c) => {
-    return c.html("<div>All systems operational</div><hr><a href='/message'>Go to message</a>")
+    const allStudents = students
+
+    return c.json(allStudents, 200)
+    // return c.html("<div>All systems operational</div><hr><a href='/message'>Go to message</a>")
 })
 
 app.get("/:slug", async (c) => {
@@ -17,15 +21,37 @@ app.get("/:slug", async (c) => {
     return c.text(`The Health is ON!!`)
 })
 
+// idempotency
+// null or undefined
+// 201 created
 app.post("/create", async (c) => {
     const profile = await c.req.json();
     const responseObject = {
+        id: crypto.randomUUID(),
         ...profile,
-        status: 'Creation was successful'
+        status: 'Creation was successful',
+        time: new Date().toDateString()
     }
     return c.json({responseObject}, 201)
 })
-// app.put("/edit", (c) => {})
+
+app.put('/students/:id', async (c) => {
+  const id = Number(c.req.param('id'))
+  const updatedStudent = await c.req.json()
+
+  const index = students.findIndex(student => student.id === id)
+
+  if (index === -1) {
+    return c.json({ message: 'Student not found' }, 404)
+  }
+
+  // PUT replaces the entire resource
+  students[index] = { ...updatedStudent, id }
+
+  return c.json(students[index], 200)
+})
+// 204
+
 // app.delete("/delete", (c) => {})
 
 export {app as healthRoute}
